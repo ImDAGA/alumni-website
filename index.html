@@ -44,6 +44,7 @@
   .hero-headline-title .italic { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.01em; color: var(--purple-glow); font-size: clamp(20px, 5.5vw, 65px); display: block; margin-top: 6px; }
   .hero-crest { position: absolute; z-index: 3; right: 48px; bottom: 56px; width: 84px; }
   .hero-crest img { width: 100%; filter: drop-shadow(0 4px 30px rgba(168,85,247,.5)); }
+  .hero-next-match { position: absolute; z-index: 3; top: 24px; right: 48px; max-width: 45%; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .3em; color: #8cefc2; text-transform: uppercase; line-height: 1.4; }
 
   /* ── Ticker ──────────────────────────────────────────────── */
   .ticker { background: var(--purple-bright); color: #fff; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -207,6 +208,7 @@
     .hero { height: 560px; }
     .hero-headline { left: 32px; bottom: 40px; }
     .hero-crest { right: 32px; bottom: 40px; width: 64px; }
+    .hero-next-match { top: 20px; right: 32px; }
 
     .about { grid-template-columns: 1fr; gap: 40px; }
     .squad-grid { grid-template-columns: repeat(2, 1fr); }
@@ -224,6 +226,7 @@
     .hero { height: 420px; }
     .hero-headline { left: 20px; bottom: 24px; max-width: calc(100% - 100px); }
     .hero-crest { right: 20px; bottom: 24px; width: 48px; }
+    .hero-next-match { top: 16px; right: 20px; font-size: 9px; letter-spacing: .18em; max-width: 55%; }
 
     .sec { padding: 56px 20px; }
     .about p { font-size: 16px; max-width: none; }
@@ -281,6 +284,7 @@
   <!-- Hero -->
   <section class="hero">
     <img src="assets/hero-2.jpg" alt="Alumni celebrando el título de Liga 8" />
+    <div class="hero-next-match" id="hero-next-match">Prox partido - Cargando…</div>
     <div class="hero-headline">
       <div class="hero-headline-title"><b>Fútbol amateur</b><span class="italic">con toque profesional.</span></div>
     </div>
@@ -716,12 +720,15 @@
   function renderNextMatch(next) {
     const rivalEl = document.getElementById('next-match-rival');
     const fechaEl = document.getElementById('next-match-fecha');
+    const heroEl = document.getElementById('hero-next-match');
     if (next) {
       rivalEl.textContent = next.rival;
       fechaEl.textContent = `Fecha ${next.nFecha} · ${next.fecha}`;
+      heroEl.textContent = `Prox partido - ${next.rival}`;
     } else {
       rivalEl.textContent = 'No hay próximo partido aún';
       fechaEl.textContent = '';
+      heroEl.textContent = 'Prox. partido - No existe aún';
     }
   }
 
