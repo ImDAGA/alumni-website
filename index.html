@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ALUMNI CF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --purple-deep: #1a0530;
+    --purple: #2e0855;
+    --purple-bright: #a855f7;
+    --purple-glow: #c084fc;
+    --ink: #05020c;
+    --paper: #ffffff;
+    --line: rgba(255,255,255,.14);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--ink); color: var(--paper); font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1280px; margin: 0 auto; background: var(--ink); }
+  h1,h2,h3,h4,h5 { margin: 0; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Top bar ─────────────────────────────────────────────── */
+  .bar { display:flex; align-items:center; justify-content:space-between; padding: 20px 48px; border-bottom: 1px solid var(--line); }
+  .bar .crest-mini { display:flex; align-items:center; gap: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .08em; }
+  .bar .crest-mini img { height: 32px; }
+  .bar nav { display:flex; gap: 28px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; }
+  .bar nav a { color: rgba(255,255,255,.7); text-decoration: none; }
+  .bar nav a:hover { color: var(--purple-glow); }
+  .bar .season { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .2em; color: rgba(255,255,255,.55); }
+
+  /* ── Hero ────────────────────────────────────────────────── */
+  .hero { position: relative; height: 720px; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .hero > img { position:absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 35%; opacity: .55; filter: saturate(1.2) contrast(1.1); }
+  .hero::after { content: ""; position:absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, rgba(168,85,247,.35), transparent 55%), linear-gradient(180deg, rgba(5,2,12,.4), rgba(5,2,12,.95)); }
+  .hero-headline { position: absolute; z-index: 3; left: 48px; bottom: 56px; max-width: 620px; }
+  .hero-headline-title { font-family: 'Bebas Neue', sans-serif; font-size: 58px; line-height: .92; letter-spacing: .01em; color: #fff; }
+  .hero-headline-title .italic { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.01em; color: var(--purple-glow); font-size: .78em; display: block; margin-top: 6px; }
+  .hero-crest { position: absolute; z-index: 3; right: 48px; bottom: 56px; width: 84px; }
+  .hero-crest img { width: 100%; filter: drop-shadow(0 4px 30px rgba(168,85,247,.5)); }
+
+  /* ── Ticker ──────────────────────────────────────────────── */
+  .ticker { background: var(--purple-bright); color: #fff; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .ticker-track { display: flex; gap: 48px; padding: 14px 0; white-space: nowrap; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: .08em; animation: ticker-scroll 42s linear infinite; }
+  .ticker-track span { display: inline-flex; gap: 12px; align-items: center; }
+  .ticker .res { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; padding: 2px 8px; background: rgba(0,0,0,.35); border-radius: 2px; letter-spacing: 0; }
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── Wordmark band ───────────────────────────────────────── */
+  .wordmark-band { overflow: hidden; background: linear-gradient(180deg, var(--ink), var(--purple-deep) 50%, var(--ink)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 22px 0; }
+  .wordmark-track { display: flex; width: max-content; animation: wordmark-scroll 60s linear infinite; }
+  .wordmark-track img { height: 34px; width: auto; display: block; margin: 0; }
+  @keyframes wordmark-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── Section head shared ─────────────────────────────────── */
+  .sec { padding: 96px 48px; }
+  .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .3em; color: var(--purple-glow); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+  .sec-title { font-family: 'Bebas Neue', sans-serif; font-size: 100px; line-height: .88; letter-spacing: .01em; color: #fff; }
+  .sec-title .italic { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.02em; color: var(--purple-glow); font-size: .42em; display: block; margin-top: 8px; }
+
+  /* ── Quiénes somos ───────────────────────────────────────── */
+  .about { display: grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items: center; }
+  .about p { font-size: 19px; line-height: 1.65; color: rgba(255,255,255,.8); margin: 0; max-width: 480px; }
+  .about p + p { margin-top: 18px; }
+  .about-facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: var(--line); }
+  .about-facts div { background: var(--ink); padding: 24px; }
+  .about-facts div small { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,.5); text-transform: uppercase; display: block; margin-bottom: 8px; }
+  .about-facts div b { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .02em; }
+
+  /* ── Plantel ──────────────────────────────────────────────── */
+  .squad-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); margin-top: 56px; }
+  .p-card { background: var(--ink); }
+  .p-card .pic { aspect-ratio: 3/4; position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .p-card .pic img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; }
+  .p-card .row { padding: 16px 18px; }
+  .p-card .row b { font-family: 'Bebas Neue', sans-serif; font-size: 21px; letter-spacing: .03em; display: block; }
+  .p-card .row span { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; color: var(--purple-glow); text-transform: uppercase; display: block; margin-top: 4px; }
+
+  /* ── Resultados ───────────────────────────────────────────── */
+  .next-strip { display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(168,85,247,.35); background: linear-gradient(90deg, rgba(168,85,247,.14), transparent); border-radius: 4px; padding: 22px 28px; margin-bottom: 44px; }
+  .next-strip .l { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .2em; color: var(--purple-glow); text-transform: uppercase; }
+  .next-strip .match { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .02em; }
+  .next-strip .when { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: rgba(255,255,255,.6); letter-spacing: .1em; }
+
+  .log { display: flex; flex-direction: column; gap: 10px; }
+  .log-row { display: grid; grid-template-columns: 1fr auto; gap: 22px; align-items: center; padding: 20px 24px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); border-radius: 3px; }
+  .log-row .match-name { font-size: 16px; font-weight: 500; }
+  .log-row .scorers { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 6px; }
+  .log-row .out { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .03em; text-align: right; min-width: 80px; }
+  .log-row.w .out { color: #4ade80; }
+  .log-row.l .out { color: #f87171; }
+  .log-row.d .out { color: rgba(255,255,255,.7); }
+
+  /* ── Estadísticas ─────────────────────────────────────────── */
+  .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); margin-bottom: 56px; }
+  .stat-card { background: var(--ink); padding: 28px; }
+  .stat-card small { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,.5); text-transform: uppercase; display: block; margin-bottom: 14px; }
+  .stat-card b { font-family: 'Bebas Neue', sans-serif; font-size: 56px; letter-spacing: .02em; line-height: 1; color: #fff; display: block; }
+  .stat-card.pos b { color: var(--purple-glow); }
+
+  .chart-block { border: 1px solid rgba(255,255,255,.08); border-radius: 4px; padding: 32px; margin-bottom: 56px; background: rgba(255,255,255,.02); }
+  .chart-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 18px; }
+  .chart-head h4 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .02em; }
+  .chart-head span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,.5); letter-spacing: .12em; }
+  .chart-block img { width: 100%; height: auto; display: block; }
+
+  .stats-split { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; margin-bottom: 56px; }
+  .scorer-board2 { display: flex; flex-direction: column; gap: 2px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); }
+  .scorer-row2 { background: var(--ink); display: grid; grid-template-columns: 44px 1fr auto; gap: 18px; align-items: center; padding: 16px 20px; }
+  .scorer-row2 .rank { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: rgba(255,255,255,.4); }
+  .scorer-row2.top .rank { color: var(--purple-glow); }
+  .scorer-row2 .name { font-size: 15px; font-weight: 500; }
+  .scorer-row2 .goals { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--purple-glow); }
+
+  .rival-card { background: var(--ink); border: 1px solid rgba(255,255,255,.08); border-radius: 4px; padding: 28px; display: flex; flex-direction: column; gap: 20px; align-items: center; text-align: center; }
+  .rival-card .lab { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .2em; color: rgba(255,255,255,.5); text-transform: uppercase; }
+  .rival-card img { height: 80px; }
+  .rival-card b { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .02em; }
+  .rival-card .h2h { display: flex; gap: 18px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+  .rival-card .h2h div b { display:block; font-size: 26px; font-family: 'Bebas Neue', sans-serif; }
+  .rival-card .h2h .g { color: #4ade80; }
+  .rival-card .h2h .e { color: rgba(255,255,255,.55); }
+  .rival-card .h2h .p { color: #f87171; }
+
+  .slam-head { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .slam-head .badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .2em; background: var(--purple-bright); color: #fff; padding: 6px 12px; border-radius: 3px; text-transform: uppercase; }
+  .slam-head h4 { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: .02em; }
+  .slam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); margin-bottom: 56px; }
+  .slam-card { background: var(--ink); padding: 26px; text-align: center; }
+  .slam-card .name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: .02em; margin-bottom: 18px; }
+  .slam-icons { display: flex; justify-content: center; gap: 14px; }
+  .slam-icons img { width: 32px; height: 32px; }
+
+  .table-b { width: 100%; border-collapse: collapse; }
+  .table-b th { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .18em; color: rgba(255,255,255,.5); padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,.12); text-transform: uppercase; }
+  .table-b th.num, .table-b td.num { text-align: center; font-variant-numeric: tabular-nums; }
+  .table-b td { padding: 13px 10px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+  .table-b td.rank { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: rgba(255,255,255,.5); width: 32px; }
+  .table-b td.pts { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--purple-glow); }
+  .table-b tr.us { background: rgba(168,85,247,.12); }
+  .table-b tr.us td.rank { color: var(--purple-glow); }
+  .table-wrap { border: 1px solid rgba(255,255,255,.08); border-radius: 4px; padding: 24px 28px; background: rgba(255,255,255,.02); }
+  .table-wrap h4 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; margin-bottom: 16px; }
+
+  /* ── Kit 2026 ─────────────────────────────────────────────── */
+  .kit { padding: 0; position: relative; overflow: hidden; background: var(--purple-deep); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kit-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .kit-photo { position: relative; min-height: 640px; overflow: hidden; }
+  .kit-photo img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; filter: saturate(1.05) contrast(1.05); }
+  .kit-photo::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, transparent 60%, rgba(26,5,48,.9) 100%); }
+  .kit-copy { padding: 90px 64px; display: flex; flex-direction: column; justify-content: center; }
+  .kit-lockup { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: .92; letter-spacing: .01em; margin-bottom: 8px; }
+  .kit-lockup .x { color: var(--purple-glow); font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: .5em; text-transform: none; display: inline-block; margin: 0 10px; }
+  .kit-copy p { font-size: 16px; line-height: 1.65; color: rgba(255,255,255,.78); max-width: 460px; margin: 20px 0 32px; }
+  .kit-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .kit-tile { aspect-ratio: 1/1; border-radius: 3px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,.1); }
+  .kit-tile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* ── Contacto ─────────────────────────────────────────────── */
+  .contact { padding: 110px 48px 60px; text-align: center; }
+  .contact .sec-title { text-align: center; }
+  .contact-links { display: flex; justify-content: center; gap: 24px; margin-top: 48px; }
+  .contact-link { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 32px 56px; border: 1px solid rgba(255,255,255,.14); border-radius: 4px; text-decoration: none; color: #fff; transition: border-color .15s, background .15s; min-width: 220px; }
+  .contact-link:hover { border-color: var(--purple-glow); background: rgba(168,85,247,.06); }
+  .contact-link .icon { width: 32px; height: 32px; }
+  .contact-link b { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: .04em; }
+  .contact-link span { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; color: rgba(255,255,255,.5); text-transform: uppercase; }
+  footer.foot-line { border-top: 1px solid var(--line); padding: 24px 48px; display:flex; justify-content:space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="bar">
+    <div class="crest-mini"><img src="assets/crest.png" alt="ALUMNI" /><span>ALUMNI · CF</span></div>
+    <nav>
+      <a href="#somos">Nosotros</a>
+      <a href="#plantel">Plantel</a>
+      <a href="#resultados">Resultados</a>
+      <a href="#stats">Estadísticas</a>
+      <a href="#kit">Kit 2026</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="season">T · 2026 / LIGA B</div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <img src="assets/hero-2.jpg" alt="Alumni celebrando el título de Liga 8" />
+    <div class="hero-headline">
+      <div class="hero-headline-title" style="font-size: 100px"><b style="font-size: 90px">Fútbol amateur</b><span class="italic" style="font-size: 65px">con toque profesional.</span></div>
+    </div>
+    <div class="hero-crest"><img src="assets/crest.png" alt="Alumni crest" /></div>
+  </section>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span><b class="res">W 2–0</b> vs Real Bombay FC</span>
+      <span><b class="res">W 5–3</b> vs Bayer Estrinque</span>
+      <span><b class="res">W 6–4</b> vs Real Passapoga</span>
+      <span><b class="res">D 2–2</b> vs La Banda de Carli</span>
+      <span><b class="res">W 5–2</b> vs Eternas Promesas</span>
+      <span><b class="res">W 2–0</b> vs Real Bombay FC</span>
+      <span><b class="res">W 5–3</b> vs Bayer Estrinque</span>
+      <span><b class="res">W 6–4</b> vs Real Passapoga</span>
+      <span><b class="res">D 2–2</b> vs La Banda de Carli</span>
+      <span><b class="res">W 5–2</b> vs Eternas Promesas</span>
+    </div>
+  </div>
+
+  <!-- Quiénes somos -->
+  <section class="sec" id="somos">
+    <div class="about">
+      <div>
+        <div class="eyebrow" style="color: #C084FC">01 — Quiénes somos</div>
+        <h2 class="sec-title" style="color: #FFFFFF">FÚTBOL.<br />OFICIO.<br />EQUIPO.</h2>
+        <p style="margin-top:28px;">Alumni Club de Fútbol nació en junio de 2023, cuando un grupo de amigos de la universidad decidió que no estaba dispuesto a dejar de jugar.</p>
+        <p>Hoy, 84 partidos después, seguimos siendo lo mismo: una excusa perfecta para juntarnos los domingos — con más historia, más cicatrices y las mismas ganas.</p>
+      </div>
+      <div class="about-facts">
+        <div><small>Fundación</small><b>Jun 2023</b></div>
+        <div><small>Primer partido</small><b>Sep 2023</b></div>
+        <div><small>Sede</small><b>CLUB RINCONADA</b></div>
+        <div><small>Liga</small><b>Liga B+ JUEVES</b></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wordmark-band"><div class="wordmark-track"><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /></div></div>
+
+  <!-- Plantel -->
+  <section class="sec" id="plantel">
+    <div class="eyebrow">02 — Plantel</div>
+    <h2 class="sec-title">EL ALUMNADO<br /><span class="italic">que deja todo en la cancha.</span></h2>
+    <div class="squad-grid">
+      <div class="p-card"><div class="pic"><img src="assets/p-abarzua-tito.png" alt="Fernando “Tito” Abarzúa" /></div><div class="row"><b>Tito Abarzúa</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-abarzua-santi.png" alt="Santiago Abarzúa" /></div><div class="row"><b>Santi Abarzúa</b><span>Mediocampista</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-carriles.png" alt="Cristian Carriles" /></div><div class="row"><b>Cristian Carriles</b><span>Mediocampista</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-cid.png" alt="Matías Cid" /></div><div class="row"><b>Matías Cid</b><span>Mediocampista</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-eguiguren.png" alt="Ignacio Eguiguren" /></div><div class="row"><b>Ignacio Eguiguren</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-gutierrez.png" alt="Diego Gutiérrez" /></div><div class="row"><b>Diego Gutiérrez</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-lira.png" alt="Dilan Lira" /></div><div class="row"><b>Dilan Lira</b><span>Delantero</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-maturana.png" alt="Vicente “Chente” Maturana" /></div><div class="row"><b>Chente Maturana</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-mura.png" alt="Sergio Mura" /></div><div class="row"><b>Sergio Mura</b><span>Mediocampista</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-patino.png" alt="Tomás Patiño" /></div><div class="row"><b>Tomás Patiño</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-rendic.png" alt="Jorge Rendic" /></div><div class="row"><b>Jorge Rendic</b><span>Mediocampista</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-rodriguez.png" alt="Joaquín Rodríguez" /></div><div class="row"><b>Joaquín Rodríguez</b><span>Arquero</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-stefanelli.png" alt="Franco Stefanelli" /></div><div class="row"><b>Franco Stefanelli</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-stier.png" alt="Ignacio Stier Ruiz" /></div><div class="row"><b>Nacho Stier Ruiz</b><span>Defensa</span></div></div>
+      <div class="p-card"><div class="pic"><img src="assets/p-valenzuela.png" alt="Pedro Valenzuela" /></div><div class="row"><b>Pedro Valenzuela</b><span>Mediocampista</span></div></div>
+    </div>
+  </section>
+
+  <!-- Resultados -->
+  <section class="sec" id="resultados">
+    <div class="eyebrow">03 — Resultados</div>
+    <h2 class="sec-title">Historial<span class="italic">de partidos.</span></h2>
+    <div style="margin-top:48px;">
+      <div class="next-strip">
+        <div class="l">Temporada finalizada</div>
+        <div class="match">1° lugar · División Thor</div>
+        <div class="when">13 PTS · 4G – 1E – 0P</div>
+      </div>
+      <div class="log">
+        <div class="log-row w"><div><div class="match-name">Alumni vs Real Bombay FC</div><div class="scorers">⚽ D. Lira (18') · J. Rendic (70')</div></div><div class="out">2–0</div></div>
+        <div class="log-row w"><div><div class="match-name">Alumni vs Bayer Estrinque</div><div class="scorers">⚽ D. Lira (7', 52') · J. Rendic (29') · D. Valencia (61') · S. Mura (85')</div></div><div class="out">5–3</div></div>
+        <div class="log-row w"><div><div class="match-name">Alumni vs Real Passapoga</div><div class="scorers">⚽ D. Lira (9', 41') · J. Rendic (23') · S. Mura (55') · D. Valencia (77') · D. Lira (88')</div></div><div class="out">6–4</div></div>
+        <div class="log-row d"><div><div class="match-name">Alumni vs La Banda de Carli</div><div class="scorers">⚽ J. Rendic (31') · S. Mura (64')</div></div><div class="out">2–2</div></div>
+        <div class="log-row w"><div><div class="match-name">Alumni vs Eternas Promesas</div><div class="scorers">⚽ D. Lira (14') · J. Rendic (36') · S. Mura (49') · D. Valencia (68') · D. Lira (80')</div></div><div class="out">5–2</div></div>
+      </div>
+      <div style="margin-top:44px;">
+        <div class="table-wrap">
+          <h4>Tabla final · División Thor</h4>
+          <table class="table-b">
+            <thead><tr><th>#</th><th>Club</th><th class="num">PJ</th><th class="num">G</th><th class="num">E</th><th class="num">P</th><th class="num">DG</th><th class="num">PTS</th></tr></thead>
+            <tbody>
+              <tr class="us"><td class="rank">1</td><td>Alumni CF</td><td class="num">5</td><td class="num">4</td><td class="num">1</td><td class="num">0</td><td class="num">+9</td><td class="pts">13</td></tr>
+              <tr><td class="rank">2</td><td>Bayer Estrinque</td><td class="num">5</td><td class="num">4</td><td class="num">0</td><td class="num">1</td><td class="num">+4</td><td class="pts">12</td></tr>
+              <tr><td class="rank">3</td><td>Eternas Promesas SM</td><td class="num">5</td><td class="num">2</td><td class="num">1</td><td class="num">2</td><td class="num">−5</td><td class="pts">7</td></tr>
+              <tr><td class="rank">4</td><td>Real Passapoga</td><td class="num">5</td><td class="num">1</td><td class="num">1</td><td class="num">3</td><td class="num">+2</td><td class="pts">4</td></tr>
+              <tr><td class="rank">5</td><td>La Banda de Carli</td><td class="num">5</td><td class="num">1</td><td class="num">1</td><td class="num">3</td><td class="num">−4</td><td class="pts">4</td></tr>
+              <tr><td class="rank">6</td><td>Real Bombay FC</td><td class="num">5</td><td class="num">1</td><td class="num">0</td><td class="num">4</td><td class="num">−6</td><td class="pts">3</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Estadísticas -->
+  <section class="sec" id="stats">
+    <div class="eyebrow">04 — Estadísticas</div>
+    <h2 class="sec-title">Números<span class="italic">de 17 temporadas.</span></h2>
+
+    <div class="stat-cards" style="margin-top:48px;">
+      <div class="stat-card"><small>Partidos jugados</small><b>84</b></div>
+      <div class="stat-card pos"><small>Rendimiento histórico</small><b>53.2%</b></div>
+      <div class="stat-card"><small>Goles a favor</small><b>252</b></div>
+      <div class="stat-card pos"><small>Diferencia de gol</small><b>+9</b></div>
+    </div>
+
+    <div class="chart-block">
+      <div class="chart-head"><h4>Rendimiento por temporada</h4><span class="mono">17 TEMPORADAS · T01 → T17</span></div>
+      <img src="assets/chart-green.svg" alt="Gráfico de rendimiento histórico" />
+    </div>
+
+    <div class="stats-split">
+      <div>
+        <div class="table-wrap" style="margin-bottom:0;">
+          <h4>Goleadores históricos</h4>
+          <div class="scorer-board2">
+            <div class="scorer-row2 top"><div class="rank">01</div><div class="name">Dilan Lira</div><div class="goals">38</div></div>
+            <div class="scorer-row2"><div class="rank">02</div><div class="name">Jorge Rendic</div><div class="goals">27</div></div>
+            <div class="scorer-row2"><div class="rank">03</div><div class="name">Sergio Mura</div><div class="goals">26</div></div>
+            <div class="scorer-row2"><div class="rank">04</div><div class="name">Diego Valencia</div><div class="goals">23</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="rival-card">
+        <div class="lab">Rival más enfrentado</div>
+        <img src="assets/logo-canterabury.webp" alt="Canterabury" />
+        <b>Canterabury</b>
+        <div class="mono" style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.15em;">6 PARTIDOS JUGADOS</div>
+        <div class="h2h">
+          <div class="g"><b>3</b>G</div>
+          <div class="e"><b>1</b>E</div>
+          <div class="p"><b>2</b>P</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slam-head"><div class="badge">★ Especial</div><h4>Grand Slam de carrera</h4></div>
+    <div class="mono" style="font-size:12px;color:rgba(255,255,255,.5);margin:-18px 0 22px;">Gol + autogol + amarilla + roja, en su historial con Alumni.</div>
+    <div class="slam-grid">
+      <div class="slam-card"><div class="name">Ignacio Eguiguren</div><div class="slam-icons"><img src="assets/icon-goal-green.svg" alt="Gol" /><img src="assets/icon-owngoal-green.svg" alt="Autogol" /><img src="assets/icon-yellow.svg" alt="Amarilla" /><img src="assets/icon-red.svg" alt="Roja" /></div></div>
+      <div class="slam-card"><div class="name">Vicente Maturana</div><div class="slam-icons"><img src="assets/icon-goal-green.svg" alt="Gol" /><img src="assets/icon-owngoal-green.svg" alt="Autogol" /><img src="assets/icon-yellow.svg" alt="Amarilla" /><img src="assets/icon-red.svg" alt="Roja" /></div></div>
+      <div class="slam-card"><div class="name">Jorge Rendic</div><div class="slam-icons"><img src="assets/icon-goal-green.svg" alt="Gol" /><img src="assets/icon-owngoal-green.svg" alt="Autogol" /><img src="assets/icon-yellow.svg" alt="Amarilla" /><img src="assets/icon-red.svg" alt="Roja" /></div></div>
+    </div>
+  </section>
+
+  <div class="wordmark-band"><div class="wordmark-track"><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /></div></div>
+
+  <!-- Kit 2026 -->
+  <section class="kit" id="kit">
+    <div class="kit-grid">
+      <div class="kit-photo"><img src="assets/kit-jersey.jpg" alt="Kit 2026 x Feria del Disco" /></div>
+      <div class="kit-copy">
+        <div class="eyebrow">05 — Pieza especial</div>
+        <div class="kit-lockup">FERIA<span class="x">del</span>DISCO</div>
+        <div class="kit-lockup" style="color: var(--purple-glow);">× ALUMNI 2026</div>
+        <p>Nuestra camiseta 2026 es una carta de amor a las tardes de sábado recorriendo los pasillos de Feria del Disco — la cadena que nos hizo felices en los 2000. Un guiño de nostalgia estampado en la camiseta que usamos cada domingo.</p>
+        <div class="kit-tiles">
+          <div class="kit-tile"><img src="assets/kit-2026-1.jpg" alt="Camiseta 2026 x Feria del Disco" /></div>
+          <div class="kit-tile"><img src="assets/kit-2026-3.jpg" alt="Camiseta 2026 en cancha" /></div>
+          <div class="kit-tile"><img src="assets/kit-2026-4.jpg" alt="Camiseta 2026 x Feria del Disco" /></div>
+          <div class="kit-tile"><img src="assets/kit-2026-2.jpg" alt="Hinchada con camiseta 2026" /></div>
+          <div class="kit-tile"><img src="assets/kit-2026-5.jpg" alt="Camiseta 2026" /></div>
+          <div class="kit-tile"><img src="assets/kit-2026-6.jpg" alt="Camiseta 2026 lifestyle" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wordmark-band"><div class="wordmark-track"><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /><img src="assets/pattern-wordmark.webp" alt="" /></div></div>
+
+  <!-- Contacto -->
+  <section class="contact" id="contacto">
+    <div class="eyebrow" style="justify-content:center;">06 — Contacto</div>
+    <h2 class="sec-title">Sigue<span class="italic">al club.</span></h2>
+    <div class="contact-links">
+      <a class="contact-link" href="#">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+        <b>Instagram</b>
+        <span>@alumnicf</span>
+      </a>
+      <a class="contact-link" href="#">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="10" x2="8" y2="17"/><circle cx="8" cy="7" r="1"/><line x1="12" y1="17" x2="12" y2="12.5"/><path d="M12 13 C12 11 16 11 16 13 L16 17"/></svg>
+        <b>LinkedIn</b>
+        <span>Alumni Club de Fútbol</span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="foot-line">
+    <span>© 2026 Alumni CF</span>
+    <span>Liga B · Huechuraba</span>
+  </footer>
+
+</div>
+</body>
+</html>
