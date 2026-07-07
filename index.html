@@ -355,6 +355,11 @@
     <div class="eyebrow">03 — Resultados</div>
     <h2 class="sec-title">Historial<span class="italic">de partidos.</span></h2>
     <div style="margin-top:48px;">
+      <div class="next-strip" id="next-match">
+        <div class="l">Próximo partido</div>
+        <div class="match" id="next-match-rival">Cargando…</div>
+        <div class="when" id="next-match-fecha"></div>
+      </div>
       <div class="next-strip">
         <div class="l">Temporada finalizada</div>
         <div class="match">1° lugar · División Thor</div>
@@ -677,11 +682,43 @@
     return rows.slice(2).map((r) => ({
       temporada: parseInt(r[0], 10),
       nFecha: parseInt(r[3], 10),
+      fecha: (r[5] || '').trim(),
       rival: (r[6] || '').trim(),
+      golesFavorRaw: (r[7] || '').trim(),
+      golesContraRaw: (r[8] || '').trim(),
       golesFavor: parseInt(r[7], 10) || 0,
       golesContra: parseInt(r[8], 10) || 0,
       resultado: (r[10] || '').trim(),
     }));
+  }
+
+  // Busca, en orden de la hoja, la última fila ya jugada (con goles a favor y
+  // en contra) y revisa si la fila siguiente es el próximo partido (tiene
+  // rival y fecha, pero todavía no resultado).
+  function findNextMatch(partidos) {
+    let lastPlayedIdx = -1;
+    for (let i = partidos.length - 1; i >= 0; i--) {
+      if (partidos[i].golesFavorRaw !== '' && partidos[i].golesContraRaw !== '') {
+        lastPlayedIdx = i;
+        break;
+      }
+    }
+    if (lastPlayedIdx === -1) return null;
+    const next = partidos[lastPlayedIdx + 1];
+    if (next && next.rival && next.fecha && !next.resultado) return next;
+    return null;
+  }
+
+  function renderNextMatch(next) {
+    const rivalEl = document.getElementById('next-match-rival');
+    const fechaEl = document.getElementById('next-match-fecha');
+    if (next) {
+      rivalEl.textContent = next.rival;
+      fechaEl.textContent = next.fecha;
+    } else {
+      rivalEl.textContent = 'No hay próximo partido aún';
+      fechaEl.textContent = '';
+    }
   }
 
   function parseGolesPorPartido(text) {
@@ -739,9 +776,12 @@
       ...m,
       scorers: golesByMatch[`${m.temporada}-${m.nFecha}`] || [],
     }));
-    const recent = matches.slice(-5);
+    // Solo partidos ya jugados: filas futuras (sin goles aún) no van en el log ni el ticker.
+    const playedMatches = matches.filter((m) => m.golesFavorRaw !== '' && m.golesContraRaw !== '');
+    const recent = playedMatches.slice(-5);
     renderMatchLog(recent);
     renderTicker(recent);
+    renderNextMatch(findNextMatch(partidos));
   } catch (err) {
     console.error('No se pudo cargar el historial de partidos desde Google Sheets', err);
   }
