@@ -605,16 +605,30 @@
   }
 
   function renderChart(seasons) {
-    const w = 900, h = 220, padTop = 10, padBottom = 22, gap = 6;
-    const barW = (w - gap * (seasons.length - 1)) / seasons.length;
+    const w = 900, h = 240, padTop = 24, padBottom = 22, padLeft = 34, padRight = 6, gap = 6;
+    const plotW = w - padLeft - padRight;
     const plotH = h - padTop - padBottom;
-    const midY = padTop + plotH * 0.5;
-    let bars = '', labels = '';
+    const barW = (plotW - gap * (seasons.length - 1)) / seasons.length;
+    const fmtPct = (v) => `${Math.round(v * 100)}%`;
+
+    // Eje Y: gridlines sólidas y recesivas en 0 / 50 / 100%, para que el
+    // lector pueda ubicar cualquier barra sin depender solo de la etiqueta.
+    let grid = '';
+    [0, 0.5, 1].forEach((frac) => {
+      const y = h - padBottom - frac * plotH;
+      grid += `<line x1="${padLeft}" y1="${y.toFixed(2)}" x2="${w - padRight}" y2="${y.toFixed(2)}" stroke="rgba(255,255,255,.08)" stroke-width="1" />`;
+      grid += `<text x="${padLeft - 8}" y="${(y + 3).toFixed(2)}" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,.4)">${Math.round(frac * 100)}%</text>`;
+    });
+
+    let bars = '', labels = '', values = '';
     seasons.forEach((s, i) => {
-      const x = i * (barW + gap);
+      const x = padLeft + i * (barW + gap);
       const barH = Math.max(2, s.rendimiento * plotH);
       const y = h - padBottom - barH;
-      bars += `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${barH.toFixed(2)}" rx="2" fill="url(#barGrad)" />`;
+      const pct = fmtPct(s.rendimiento);
+      bars += `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${barH.toFixed(2)}" rx="2" fill="url(#barGrad)"><title>Temporada ${s.temporada}: ${pct}</title></rect>`;
+      // Valor en el cap de la columna (nunca adentro: varias barras son muy bajas para contenerlo).
+      values += `<text x="${(x + barW / 2).toFixed(2)}" y="${(y - 6).toFixed(2)}" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,.75)">${pct}</text>`;
       labels += `<text x="${(x + barW / 2).toFixed(2)}" y="${h - 6}" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,.4)">T${String(s.temporada).padStart(2, '0')}</text>`;
     });
     document.getElementById('rendimiento-chart').innerHTML = `
@@ -625,8 +639,9 @@
             <stop offset="100%" stop-color="#c084fc" />
           </linearGradient>
         </defs>
-        <line x1="0" y1="${midY.toFixed(2)}" x2="${w}" y2="${midY.toFixed(2)}" stroke="rgba(255,255,255,.15)" stroke-dasharray="3,4" />
+        ${grid}
         ${bars}
+        ${values}
         ${labels}
       </svg>`;
   }
