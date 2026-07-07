@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=1280" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ALUMNI CF</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,18 +19,20 @@
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: var(--ink); color: var(--paper); font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  .page { width: 1280px; margin: 0 auto; background: var(--ink); }
+  .page { max-width: 1280px; width: 100%; margin: 0 auto; background: var(--ink); overflow-x: hidden; }
   h1,h2,h3,h4,h5 { margin: 0; }
   .mono { font-family: 'JetBrains Mono', monospace; }
 
   /* ── Top bar ─────────────────────────────────────────────── */
-  .bar { display:flex; align-items:center; justify-content:space-between; padding: 20px 48px; border-bottom: 1px solid var(--line); }
+  .bar { position: relative; z-index: 10; display:flex; align-items:center; justify-content:space-between; padding: 20px 48px; border-bottom: 1px solid var(--line); }
   .bar .crest-mini { display:flex; align-items:center; gap: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .08em; }
   .bar .crest-mini img { height: 32px; }
   .bar nav { display:flex; gap: 28px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; }
   .bar nav a { color: rgba(255,255,255,.7); text-decoration: none; }
   .bar nav a:hover { color: var(--purple-glow); }
   .bar .season { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .2em; color: rgba(255,255,255,.55); }
+  .nav-toggle { display: none; }
+  .nav-burger { display: none; }
 
   /* ── Hero ────────────────────────────────────────────────── */
   .hero { position: relative; height: 720px; overflow: hidden; border-bottom: 1px solid var(--line); }
@@ -38,7 +40,8 @@
   .hero::after { content: ""; position:absolute; inset: 0; background: radial-gradient(ellipse at 30% 40%, rgba(168,85,247,.35), transparent 55%), linear-gradient(180deg, rgba(5,2,12,.4), rgba(5,2,12,.95)); }
   .hero-headline { position: absolute; z-index: 3; left: 48px; bottom: 56px; max-width: 620px; }
   .hero-headline-title { font-family: 'Bebas Neue', sans-serif; font-size: 58px; line-height: .92; letter-spacing: .01em; color: #fff; }
-  .hero-headline-title .italic { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.01em; color: var(--purple-glow); font-size: .78em; display: block; margin-top: 6px; }
+  .hero-headline-title b { font-size: clamp(34px, 8vw, 90px); }
+  .hero-headline-title .italic { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.01em; color: var(--purple-glow); font-size: clamp(20px, 5.5vw, 65px); display: block; margin-top: 6px; }
   .hero-crest { position: absolute; z-index: 3; right: 48px; bottom: 56px; width: 84px; }
   .hero-crest img { width: 100%; filter: drop-shadow(0 4px 30px rgba(168,85,247,.5)); }
 
@@ -58,7 +61,7 @@
   /* ── Section head shared ─────────────────────────────────── */
   .sec { padding: 96px 48px; }
   .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .3em; color: var(--purple-glow); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-  .sec-title { font-family: 'Bebas Neue', sans-serif; font-size: 100px; line-height: .88; letter-spacing: .01em; color: #fff; }
+  .sec-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 9vw, 100px); line-height: .88; letter-spacing: .01em; color: #fff; }
   .sec-title .italic { font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -.02em; color: var(--purple-glow); font-size: .42em; display: block; margin-top: 8px; }
 
   /* ── Quiénes somos ───────────────────────────────────────── */
@@ -152,7 +155,7 @@
   .kit-photo img { position:absolute; inset:0; width:100%; height:100%; object-fit: cover; filter: saturate(1.05) contrast(1.05); }
   .kit-photo::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, transparent 60%, rgba(26,5,48,.9) 100%); }
   .kit-copy { padding: 90px 64px; display: flex; flex-direction: column; justify-content: center; }
-  .kit-lockup { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: .92; letter-spacing: .01em; margin-bottom: 8px; }
+  .kit-lockup { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px, 7vw, 72px); line-height: .92; letter-spacing: .01em; margin-bottom: 8px; }
   .kit-lockup .x { color: var(--purple-glow); font-family: 'Playfair Display', serif; font-style: italic; font-weight: 400; font-size: .5em; text-transform: none; display: inline-block; margin: 0 10px; }
   .kit-copy p { font-size: 16px; line-height: 1.65; color: rgba(255,255,255,.78); max-width: 460px; margin: 20px 0 32px; }
   .kit-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -162,13 +165,86 @@
   /* ── Contacto ─────────────────────────────────────────────── */
   .contact { padding: 110px 48px 60px; text-align: center; }
   .contact .sec-title { text-align: center; }
-  .contact-links { display: flex; justify-content: center; gap: 24px; margin-top: 48px; }
+  .contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 48px; }
   .contact-link { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 32px 56px; border: 1px solid rgba(255,255,255,.14); border-radius: 4px; text-decoration: none; color: #fff; transition: border-color .15s, background .15s; min-width: 220px; }
   .contact-link:hover { border-color: var(--purple-glow); background: rgba(168,85,247,.06); }
   .contact-link .icon { width: 32px; height: 32px; }
   .contact-link b { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: .04em; }
   .contact-link span { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; color: rgba(255,255,255,.5); text-transform: uppercase; }
   footer.foot-line { border-top: 1px solid var(--line); padding: 24px 48px; display:flex; justify-content:space-between; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+
+  /* ── Responsive: nav collapse ────────────────────────────── */
+  /* Nav + season + logo need ~930px; give it more room than the
+     grid breakpoint below since flex nowrap has no slack. */
+  @media (max-width: 1060px) {
+    .bar .season { display: none; }
+    .nav-burger {
+      display: flex; flex-direction: column; justify-content: center; gap: 5px;
+      width: 32px; height: 26px; cursor: pointer; z-index: 5;
+    }
+    .nav-burger span { display: block; height: 2px; background: #fff; border-radius: 2px; }
+    .bar nav {
+      display: none; flex-direction: column; gap: 0;
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: var(--ink); border-bottom: 1px solid var(--line);
+      padding: 4px 20px 12px; z-index: 4;
+    }
+    .bar nav a { padding: 12px 0; border-top: 1px solid var(--line); }
+    .bar nav a:first-child { border-top: 0; }
+    .nav-toggle:checked ~ nav { display: flex; }
+  }
+
+  /* ── Responsive: tablet ──────────────────────────────────── */
+  @media (max-width: 900px) {
+    .sec { padding: 72px 32px; }
+    .hero { height: 560px; }
+    .hero-headline { left: 32px; bottom: 40px; }
+    .hero-crest { right: 32px; bottom: 40px; width: 64px; }
+
+    .about { grid-template-columns: 1fr; gap: 40px; }
+    .squad-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-split { grid-template-columns: 1fr; }
+    .slam-grid { grid-template-columns: repeat(2, 1fr); }
+    .kit-grid { grid-template-columns: 1fr; }
+    .kit-photo { min-height: 340px; }
+    .kit-copy { padding: 56px 32px; }
+  }
+
+  /* ── Responsive: mobile ──────────────────────────────────── */
+  @media (max-width: 640px) {
+    .bar { padding: 16px 20px; }
+
+    .hero { height: 420px; }
+    .hero-headline { left: 20px; bottom: 24px; max-width: calc(100% - 100px); }
+    .hero-crest { right: 20px; bottom: 24px; width: 48px; }
+
+    .sec { padding: 56px 20px; }
+    .about p { font-size: 16px; max-width: none; }
+    .about-facts div { padding: 18px; }
+
+    .squad-grid { grid-template-columns: repeat(2, 1fr); margin-top: 36px; }
+
+    .next-strip { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .log-row { padding: 16px 18px; gap: 12px; }
+    .log-row .out { font-size: 24px; min-width: 60px; }
+
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .stat-card b { font-size: 36px; }
+
+    .slam-grid { grid-template-columns: 1fr; }
+
+    .table-wrap { padding: 18px 16px; overflow-x: auto; }
+    .table-wrap table { min-width: 460px; }
+
+    .kit-photo { min-height: 240px; }
+    .kit-copy { padding: 40px 20px; }
+    .kit-tiles { gap: 6px; }
+
+    .contact { padding: 72px 20px 48px; }
+    .contact-link { min-width: 0; flex: 1 1 160px; padding: 24px 20px; }
+
+    footer.foot-line { padding: 20px; flex-direction: column; gap: 6px; text-align: center; }
+  }
 </style>
 </head>
 <body>
@@ -176,6 +252,7 @@
 
   <div class="bar">
     <div class="crest-mini"><img src="assets/crest.png" alt="ALUMNI" /><span>ALUMNI · CF</span></div>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
     <nav>
       <a href="#somos">Nosotros</a>
       <a href="#plantel">Plantel</a>
@@ -185,13 +262,14 @@
       <a href="#contacto">Contacto</a>
     </nav>
     <div class="season">T · 2026 / LIGA B</div>
+    <label for="nav-toggle" class="nav-burger" aria-label="Abrir menú"><span></span><span></span><span></span></label>
   </div>
 
   <!-- Hero -->
   <section class="hero">
     <img src="assets/hero-2.jpg" alt="Alumni celebrando el título de Liga 8" />
     <div class="hero-headline">
-      <div class="hero-headline-title" style="font-size: 100px"><b style="font-size: 90px">Fútbol amateur</b><span class="italic" style="font-size: 65px">con toque profesional.</span></div>
+      <div class="hero-headline-title"><b>Fútbol amateur</b><span class="italic">con toque profesional.</span></div>
     </div>
     <div class="hero-crest"><img src="assets/crest.png" alt="Alumni crest" /></div>
   </section>
