@@ -222,7 +222,13 @@
     .about p { font-size: 16px; max-width: none; }
     .about-facts div { padding: 18px; }
 
-    .squad-grid { grid-template-columns: repeat(2, 1fr); margin-top: 36px; }
+    .squad-grid {
+      margin-top: 36px; grid-template-columns: unset; grid-auto-flow: column;
+      grid-template-rows: repeat(2, auto); grid-auto-columns: 46%;
+      overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    }
+    .squad-grid::-webkit-scrollbar { display: none; }
+    .p-card { scroll-snap-align: start; }
 
     .next-strip { flex-direction: column; align-items: flex-start; gap: 10px; }
     .log-row { padding: 16px 18px; gap: 12px; }
@@ -453,12 +459,7 @@
       <a class="contact-link" href="#">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
         <b>Instagram</b>
-        <span>@alumnicf</span>
-      </a>
-      <a class="contact-link" href="#">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="8" y1="10" x2="8" y2="17"/><circle cx="8" cy="7" r="1"/><line x1="12" y1="17" x2="12" y2="12.5"/><path d="M12 13 C12 11 16 11 16 13 L16 17"/></svg>
-        <b>LinkedIn</b>
-        <span>Alumni Club de Fútbol</span>
+        <span>@alumni.clubdefutbol</span>
       </a>
     </div>
   </section>
