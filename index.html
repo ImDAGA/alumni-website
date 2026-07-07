@@ -360,7 +360,7 @@
         <div class="match">1° lugar · División Thor</div>
         <div class="when">13 PTS · 4G – 1E – 0P</div>
       </div>
-      <div class="log">
+      <div class="log" id="match-log">
         <div class="log-row w"><div><div class="match-name">Alumni vs Real Bombay FC</div><div class="scorers">⚽ D. Lira (18') · J. Rendic (70')</div></div><div class="out">2–0</div></div>
         <div class="log-row w"><div><div class="match-name">Alumni vs Bayer Estrinque</div><div class="scorers">⚽ D. Lira (7', 52') · J. Rendic (29') · D. Valencia (61') · S. Mura (85')</div></div><div class="out">5–3</div></div>
         <div class="log-row w"><div><div class="match-name">Alumni vs Real Passapoga</div><div class="scorers">⚽ D. Lira (9', 41') · J. Rendic (23') · S. Mura (55') · D. Valencia (77') · D. Lira (88')</div></div><div class="out">6–4</div></div>
@@ -486,6 +486,8 @@
 <script>
 (async function () {
   const STATS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZWPbiSqe8KPPhtNxQiIcKz-rfvbfLgT9hW_WX7VK4Wsh-DA7lVKKO28GrfKwtpkbKgKIbZitBOQlA/pub?output=csv';
+  const MATCHES_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZWPbiSqe8KPPhtNxQiIcKz-rfvbfLgT9hW_WX7VK4Wsh-DA7lVKKO28GrfKwtpkbKgKIbZitBOQlA/pub?output=csv&gid=1207520621';
+  const GOALS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZWPbiSqe8KPPhtNxQiIcKz-rfvbfLgT9hW_WX7VK4Wsh-DA7lVKKO28GrfKwtpkbKgKIbZitBOQlA/pub?output=csv&gid=1386424751';
 
   // La pestaña "Grand Slam" todavía no está publicada en el Sheet, así que
   // por ahora se mantiene con los últimos valores conocidos.
@@ -660,6 +662,71 @@
       </div>`).join('');
   } catch (err) {
     console.error('No se pudo cargar las estadísticas desde Google Sheets', err);
+  }
+
+  // "Dilan Lira" -> "D. Lira" ; "Heiner Von Hagen" -> "H. Von Hagen"
+  function abbreviateName(fullName) {
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0];
+    return `${parts[0][0]}. ${parts.slice(1).join(' ')}`;
+  }
+
+  function parsePartidos(text) {
+    const rows = parseCSV(text).filter((r) => r.some((c) => c.trim() !== ''));
+    // rows[0] = título, rows[1] = encabezado, rows[2+] = datos
+    return rows.slice(2).map((r) => ({
+      temporada: parseInt(r[0], 10),
+      nFecha: parseInt(r[3], 10),
+      rival: (r[6] || '').trim(),
+      golesFavor: parseInt(r[7], 10) || 0,
+      golesContra: parseInt(r[8], 10) || 0,
+      resultado: (r[10] || '').trim(),
+    }));
+  }
+
+  function parseGolesPorPartido(text) {
+    const rows = parseCSV(text).filter((r) => r.some((c) => c.trim() !== ''));
+    // rows[0] = título, rows[1] = encabezado (Temporada, N Fecha, Rival, <jugadores...>, Otros/EXTRA)
+    const header = rows[1];
+    const playerCols = header.slice(3, header.length - 1); // sin Otros/EXTRA: no es un jugador identificable
+    return rows.slice(2).map((r) => {
+      const scorers = [];
+      playerCols.forEach((name, idx) => {
+        const goles = parseInt(r[3 + idx], 10);
+        if (goles > 0) scorers.push({ jugador: name.trim(), goles });
+      });
+      return { temporada: parseInt(r[0], 10), nFecha: parseInt(r[1], 10), scorers };
+    });
+  }
+
+  function renderMatchLog(matches) {
+    document.getElementById('match-log').innerHTML = matches.map((m) => {
+      const res = m.resultado.toLowerCase();
+      const cls = res.startsWith('gan') ? 'w' : res.startsWith('emp') ? 'd' : 'l';
+      const scorersHtml = m.scorers.length
+        ? `<div class="scorers">⚽ ${m.scorers.map((s) => abbreviateName(s.jugador) + (s.goles > 1 ? ` x${s.goles}` : '')).join(' · ')}</div>`
+        : '';
+      return `<div class="log-row ${cls}"><div><div class="match-name">Alumni vs ${m.rival}</div>${scorersHtml}</div><div class="out">${m.golesFavor}–${m.golesContra}</div></div>`;
+    }).join('');
+  }
+
+  try {
+    const [partidosText, golesText] = await Promise.all([
+      fetch(MATCHES_SHEET_CSV_URL).then((res) => res.text()),
+      fetch(GOALS_SHEET_CSV_URL).then((res) => res.text()),
+    ]);
+    const partidos = parsePartidos(partidosText);
+    const golesByMatch = {};
+    parseGolesPorPartido(golesText).forEach((g) => {
+      golesByMatch[`${g.temporada}-${g.nFecha}`] = g.scorers;
+    });
+    const matches = partidos.map((m) => ({
+      ...m,
+      scorers: golesByMatch[`${m.temporada}-${m.nFecha}`] || [],
+    }));
+    renderMatchLog(matches.slice(-5));
+  } catch (err) {
+    console.error('No se pudo cargar el historial de partidos desde Google Sheets', err);
   }
 })();
 </script>
