@@ -485,6 +485,110 @@
 </div>
 <script>
 (async function () {
+  const STATS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZWPbiSqe8KPPhtNxQiIcKz-rfvbfLgT9hW_WX7VK4Wsh-DA7lVKKO28GrfKwtpkbKgKIbZitBOQlA/pub?output=csv';
+
+  // La pestaña "Grand Slam" todavía no está publicada en el Sheet, así que
+  // por ahora se mantiene con los últimos valores conocidos.
+  const GRAND_SLAM_FALLBACK = [
+    { jugador: 'Ignacio Eguiguren' },
+    { jugador: 'Vicente Maturana' },
+    { jugador: 'Jorge Rendic' },
+  ];
+
+  function parseCSV(text) {
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else { inQuotes = false; }
+        } else {
+          field += c;
+        }
+      } else if (c === '"') {
+        inQuotes = true;
+      } else if (c === ',') {
+        row.push(field); field = '';
+      } else if (c === '\r') {
+        // skip, \n handles the line break
+      } else if (c === '\n') {
+        row.push(field); rows.push(row); row = []; field = '';
+      } else {
+        field += c;
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  function splitBlocks(rows) {
+    const isBlank = (row) => row.every((c) => c.trim() === '');
+    const blocks = [];
+    let cur = [];
+    rows.forEach((row) => {
+      if (isBlank(row)) {
+        if (cur.length) { blocks.push(cur); cur = []; }
+      } else {
+        cur.push(row);
+      }
+    });
+    if (cur.length) blocks.push(cur);
+    return blocks;
+  }
+
+  // "52,4%" / "20,0%" -> 0.524 / 0.2 (fracción 0-1, coma decimal → punto)
+  function parsePercent(str) {
+    const n = parseFloat(String(str).replace('%', '').trim().replace(',', '.'));
+    return Number.isNaN(n) ? 0 : n / 100;
+  }
+
+  function parseStatsSheet(text) {
+    const blocks = splitBlocks(parseCSV(text));
+    const data = { resumen: {}, top_goleadores: [], evolucion_por_temporada: [], rival_mas_enfrentado: {} };
+    blocks.forEach((block) => {
+      const head = (block[0][0] || '').trim();
+      if (head === 'Partidos jugados') {
+        const map = {};
+        block.forEach((r) => { map[r[0].trim()] = (r[1] || '').trim(); });
+        data.resumen = {
+          partidos_jugados: parseInt(map['Partidos jugados'], 10) || 0,
+          partidos_ganados: parseInt(map['Partidos ganados'], 10) || 0,
+          partidos_empatados: parseInt(map['Partidos empatados'], 10) || 0,
+          partidos_perdidos: parseInt(map['Partidos perdidos'], 10) || 0,
+          rendimiento_historico: parsePercent(map['Rendimiento historico (%)']),
+          goles_favor: parseInt(map['Goles a favor'], 10) || 0,
+          goles_contra: parseInt(map['Goles en contra'], 10) || 0,
+          diferencia_goles: parseInt(map['Diferencia de goles'], 10) || 0,
+        };
+      } else if (head === 'Top Goleadores Historicos') {
+        data.top_goleadores = block.slice(2)
+          .filter((r) => r[0] && r[0].trim())
+          .map((r) => ({ jugador: r[0].trim(), goles: parseInt(r[1], 10) || 0 }))
+          .sort((a, b) => b.goles - a.goles);
+      } else if (head === 'Evolucion por temporada') {
+        data.evolucion_por_temporada = block.slice(2)
+          .filter((r) => r[0] && r[0].trim())
+          .map((r) => ({
+            temporada: parseInt(r[0], 10) || 0,
+            partidos: parseInt(r[1], 10) || 0,
+            rendimiento: parsePercent(r[5]),
+          }));
+      } else if (head === 'Rival mas enfrentado') {
+        const map = {};
+        block.slice(1).forEach((r) => { map[r[0].trim()] = (r[1] || '').trim(); });
+        data.rival_mas_enfrentado = {
+          rival: map['Rival'] || '',
+          partidos: parseInt(map['Partidos jugados contra ellos'], 10) || 0,
+          record: map['Record (G-E-P)'] || '',
+        };
+      }
+    });
+    data.grand_slam = GRAND_SLAM_FALLBACK;
+    return data;
+  }
+
   function renderChart(seasons) {
     const w = 900, h = 220, padTop = 10, padBottom = 22, gap = 6;
     const barW = (w - gap * (seasons.length - 1)) / seasons.length;
@@ -513,8 +617,9 @@
   }
 
   try {
-    const res = await fetch('alumni_stats_data.json');
-    const data = await res.json();
+    const res = await fetch(STATS_SHEET_CSV_URL);
+    const csvText = await res.text();
+    const data = parseStatsSheet(csvText);
 
     const r = data.resumen;
     document.querySelector('[data-stat="partidos_jugados"]').textContent = r.partidos_jugados;
@@ -554,7 +659,7 @@
         </div>
       </div>`).join('');
   } catch (err) {
-    console.error('No se pudo cargar alumni_stats_data.json', err);
+    console.error('No se pudo cargar las estadísticas desde Google Sheets', err);
   }
 })();
 </script>
