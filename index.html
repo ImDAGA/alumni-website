@@ -111,6 +111,7 @@
   .chart-head h4 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: .02em; }
   .chart-head span { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,.5); letter-spacing: .12em; }
   .chart-block img { width: 100%; height: auto; display: block; }
+  .rendimiento-chart svg { width: 100%; height: auto; display: block; }
 
   .stats-split { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; margin-bottom: 56px; }
   .scorer-board2 { display: flex; flex-direction: column; gap: 2px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); }
@@ -388,25 +389,27 @@
   <!-- Estadísticas -->
   <section class="sec" id="stats">
     <div class="eyebrow">04 — Estadísticas</div>
-    <h2 class="sec-title">Números<span class="italic">de 17 temporadas.</span></h2>
+    <h2 class="sec-title">Números<span class="italic" id="stats-season-count">de 17 temporadas.</span></h2>
 
     <div class="stat-cards" style="margin-top:48px;">
-      <div class="stat-card"><small>Partidos jugados</small><b>84</b></div>
-      <div class="stat-card pos"><small>Rendimiento histórico</small><b>53.2%</b></div>
-      <div class="stat-card"><small>Goles a favor</small><b>252</b></div>
-      <div class="stat-card pos"><small>Diferencia de gol</small><b>+9</b></div>
+      <div class="stat-card"><small>Partidos jugados</small><b data-stat="partidos_jugados">84</b></div>
+      <div class="stat-card pos"><small>Rendimiento histórico</small><b data-stat="rendimiento_historico">53.2%</b></div>
+      <div class="stat-card"><small>Goles a favor</small><b data-stat="goles_favor">252</b></div>
+      <div class="stat-card pos"><small>Diferencia de gol</small><b data-stat="diferencia_goles">+9</b></div>
     </div>
 
     <div class="chart-block">
-      <div class="chart-head"><h4>Rendimiento por temporada</h4><span class="mono">17 TEMPORADAS · T01 → T17</span></div>
-      <img src="assets/chart-green.svg" alt="Gráfico de rendimiento histórico" />
+      <div class="chart-head"><h4>Rendimiento por temporada</h4><span class="mono" id="chart-season-label">17 TEMPORADAS · T01 → T17</span></div>
+      <div id="rendimiento-chart" class="rendimiento-chart" role="img" aria-label="Gráfico de rendimiento histórico">
+        <img src="assets/chart-green.svg" alt="Gráfico de rendimiento histórico" />
+      </div>
     </div>
 
     <div class="stats-split">
       <div>
         <div class="table-wrap" style="margin-bottom:0;">
           <h4>Goleadores históricos</h4>
-          <div class="scorer-board2">
+          <div class="scorer-board2" id="scorer-board2">
             <div class="scorer-row2 top"><div class="rank">01</div><div class="name">Dilan Lira</div><div class="goals">38</div></div>
             <div class="scorer-row2"><div class="rank">02</div><div class="name">Jorge Rendic</div><div class="goals">27</div></div>
             <div class="scorer-row2"><div class="rank">03</div><div class="name">Sergio Mura</div><div class="goals">26</div></div>
@@ -417,19 +420,19 @@
       <div class="rival-card">
         <div class="lab">Rival más enfrentado</div>
         <img src="assets/logo-canterabury.webp" alt="Canterabury" />
-        <b>Canterabury</b>
-        <div class="mono" style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.15em;">6 PARTIDOS JUGADOS</div>
+        <b id="rival-name">Canterabury</b>
+        <div class="mono" id="rival-partidos" style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.15em;">6 PARTIDOS JUGADOS</div>
         <div class="h2h">
-          <div class="g"><b>3</b>G</div>
-          <div class="e"><b>1</b>E</div>
-          <div class="p"><b>2</b>P</div>
+          <div class="g"><b id="rival-g">3</b>G</div>
+          <div class="e"><b id="rival-e">1</b>E</div>
+          <div class="p"><b id="rival-p">2</b>P</div>
         </div>
       </div>
     </div>
 
     <div class="slam-head"><div class="badge">★ Especial</div><h4>Grand Slam</h4></div>
     <div class="mono" style="font-size:12px;color:rgba(255,255,255,.5);margin:-18px 0 22px;">Gol + autogol + amarilla + roja, en su historial con Alumni.</div>
-    <div class="slam-grid">
+    <div class="slam-grid" id="slam-grid">
       <div class="slam-card"><div class="name">Ignacio Eguiguren</div><div class="slam-icons"><img src="assets/icon-goal-green.svg" alt="Gol" /><img src="assets/icon-owngoal-green.svg" alt="Autogol" /><img src="assets/icon-yellow.svg" alt="Amarilla" /><img src="assets/icon-red.svg" alt="Roja" /></div></div>
       <div class="slam-card"><div class="name">Vicente Maturana</div><div class="slam-icons"><img src="assets/icon-goal-green.svg" alt="Gol" /><img src="assets/icon-owngoal-green.svg" alt="Autogol" /><img src="assets/icon-yellow.svg" alt="Amarilla" /><img src="assets/icon-red.svg" alt="Roja" /></div></div>
       <div class="slam-card"><div class="name">Jorge Rendic</div><div class="slam-icons"><img src="assets/icon-goal-green.svg" alt="Gol" /><img src="assets/icon-owngoal-green.svg" alt="Autogol" /><img src="assets/icon-yellow.svg" alt="Amarilla" /><img src="assets/icon-red.svg" alt="Roja" /></div></div>
@@ -480,5 +483,80 @@
   </footer>
 
 </div>
+<script>
+(async function () {
+  function renderChart(seasons) {
+    const w = 900, h = 220, padTop = 10, padBottom = 22, gap = 6;
+    const barW = (w - gap * (seasons.length - 1)) / seasons.length;
+    const plotH = h - padTop - padBottom;
+    const midY = padTop + plotH * 0.5;
+    let bars = '', labels = '';
+    seasons.forEach((s, i) => {
+      const x = i * (barW + gap);
+      const barH = Math.max(2, s.rendimiento * plotH);
+      const y = h - padBottom - barH;
+      bars += `<rect x="${x.toFixed(2)}" y="${y.toFixed(2)}" width="${barW.toFixed(2)}" height="${barH.toFixed(2)}" rx="2" fill="url(#barGrad)" />`;
+      labels += `<text x="${(x + barW / 2).toFixed(2)}" y="${h - 6}" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,.4)">T${String(s.temporada).padStart(2, '0')}</text>`;
+    });
+    document.getElementById('rendimiento-chart').innerHTML = `
+      <svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="barGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#7c3aed" />
+            <stop offset="100%" stop-color="#c084fc" />
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="${midY.toFixed(2)}" x2="${w}" y2="${midY.toFixed(2)}" stroke="rgba(255,255,255,.15)" stroke-dasharray="3,4" />
+        ${bars}
+        ${labels}
+      </svg>`;
+  }
+
+  try {
+    const res = await fetch('alumni_stats_data.json');
+    const data = await res.json();
+
+    const r = data.resumen;
+    document.querySelector('[data-stat="partidos_jugados"]').textContent = r.partidos_jugados;
+    document.querySelector('[data-stat="rendimiento_historico"]').textContent = (r.rendimiento_historico * 100).toFixed(1) + '%';
+    document.querySelector('[data-stat="goles_favor"]').textContent = r.goles_favor;
+    document.querySelector('[data-stat="diferencia_goles"]').textContent = (r.diferencia_goles >= 0 ? '+' : '') + r.diferencia_goles;
+
+    const nSeasons = data.evolucion_por_temporada.length;
+    const nSeasonsPad = String(nSeasons).padStart(2, '0');
+    document.getElementById('stats-season-count').textContent = `de ${nSeasons} temporadas.`;
+    document.getElementById('chart-season-label').textContent = `${nSeasons} TEMPORADAS · T01 → T${nSeasonsPad}`;
+    renderChart(data.evolucion_por_temporada);
+
+    document.getElementById('scorer-board2').innerHTML = data.top_goleadores.slice(0, 4).map((s, i) => `
+      <div class="scorer-row2${i === 0 ? ' top' : ''}">
+        <div class="rank">${String(i + 1).padStart(2, '0')}</div>
+        <div class="name">${s.jugador}</div>
+        <div class="goals">${s.goles}</div>
+      </div>`).join('');
+
+    const rv = data.rival_mas_enfrentado;
+    const [rvG, rvE, rvP] = rv.record.split('-');
+    document.getElementById('rival-name').textContent = rv.rival;
+    document.getElementById('rival-partidos').textContent = `${rv.partidos} PARTIDOS JUGADOS`;
+    document.getElementById('rival-g').textContent = rvG;
+    document.getElementById('rival-e').textContent = rvE;
+    document.getElementById('rival-p').textContent = rvP;
+
+    document.getElementById('slam-grid').innerHTML = data.grand_slam.map((pl) => `
+      <div class="slam-card">
+        <div class="name">${pl.jugador}</div>
+        <div class="slam-icons">
+          <img src="assets/icon-goal-green.svg" alt="Gol" />
+          <img src="assets/icon-owngoal-green.svg" alt="Autogol" />
+          <img src="assets/icon-yellow.svg" alt="Amarilla" />
+          <img src="assets/icon-red.svg" alt="Roja" />
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    console.error('No se pudo cargar alumni_stats_data.json', err);
+  }
+})();
+</script>
 </body>
 </html>
