@@ -285,7 +285,7 @@
 
   <!-- Ticker -->
   <div class="ticker">
-    <div class="ticker-track">
+    <div class="ticker-track" id="ticker-track">
       <span><b class="res">W 2–0</b> vs Real Bombay FC</span>
       <span><b class="res">W 5–3</b> vs Bayer Estrinque</span>
       <span><b class="res">W 6–4</b> vs Real Passapoga</span>
@@ -701,15 +701,28 @@
     });
   }
 
+  function resultInfo(resultado) {
+    const res = resultado.toLowerCase();
+    if (res.startsWith('gan')) return { cls: 'w', letter: 'W' };
+    if (res.startsWith('emp')) return { cls: 'd', letter: 'D' };
+    return { cls: 'l', letter: 'L' };
+  }
+
   function renderMatchLog(matches) {
     document.getElementById('match-log').innerHTML = matches.map((m) => {
-      const res = m.resultado.toLowerCase();
-      const cls = res.startsWith('gan') ? 'w' : res.startsWith('emp') ? 'd' : 'l';
       const scorersHtml = m.scorers.length
         ? `<div class="scorers">⚽ ${m.scorers.map((s) => abbreviateName(s.jugador) + (s.goles > 1 ? ` x${s.goles}` : '')).join(' · ')}</div>`
         : '';
-      return `<div class="log-row ${cls}"><div><div class="match-name">Alumni vs ${m.rival}</div>${scorersHtml}</div><div class="out">${m.golesFavor}–${m.golesContra}</div></div>`;
+      return `<div class="log-row ${resultInfo(m.resultado).cls}"><div><div class="match-name">Alumni vs ${m.rival}</div>${scorersHtml}</div><div class="out">${m.golesFavor}–${m.golesContra}</div></div>`;
     }).join('');
+  }
+
+  // La franja se ve como un loop infinito porque el contenido se duplica y la
+  // animación CSS recorre solo el primer 50% del ancho total.
+  function renderTicker(matches) {
+    const items = matches.map((m) =>
+      `<span><b class="res">${resultInfo(m.resultado).letter} ${m.golesFavor}–${m.golesContra}</b> vs ${m.rival}</span>`);
+    document.getElementById('ticker-track').innerHTML = items.concat(items).join('');
   }
 
   try {
@@ -726,7 +739,9 @@
       ...m,
       scorers: golesByMatch[`${m.temporada}-${m.nFecha}`] || [],
     }));
-    renderMatchLog(matches.slice(-5));
+    const recent = matches.slice(-5);
+    renderMatchLog(recent);
+    renderTicker(recent);
   } catch (err) {
     console.error('No se pudo cargar el historial de partidos desde Google Sheets', err);
   }
