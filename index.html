@@ -47,14 +47,14 @@
   .hero-next-match { position: absolute; z-index: 3; top: 24px; right: 48px; max-width: 45%; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .3em; color: #8cefc2; text-transform: uppercase; line-height: 1.4; }
 
   /* ── Ticker ──────────────────────────────────────────────── */
-  .ticker { background: var(--purple-bright); color: #fff; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .ticker { width: 100vw; margin-left: 50%; transform: translateX(-50%); background: var(--purple-bright); color: #fff; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .ticker-track { display: flex; gap: 48px; padding: 14px 0; white-space: nowrap; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: .08em; animation: ticker-scroll 42s linear infinite; }
   .ticker-track span { display: inline-flex; gap: 12px; align-items: center; }
   .ticker .res { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; padding: 2px 8px; background: rgba(0,0,0,.35); border-radius: 2px; letter-spacing: 0; }
   @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   /* ── Wordmark band ───────────────────────────────────────── */
-  .wordmark-band { overflow: hidden; background: linear-gradient(180deg, var(--ink), var(--purple-deep) 50%, var(--ink)); padding: 22px 0; }
+  .wordmark-band { width: 100vw; margin-left: 50%; transform: translateX(-50%); overflow: hidden; background: linear-gradient(180deg, var(--ink), var(--purple-deep) 50%, var(--ink)); padding: 22px 0; }
   .wordmark-track { display: flex; width: max-content; animation: wordmark-scroll 60s linear infinite; }
   .wordmark-track img { height: 34px; width: auto; display: block; margin: 0; }
   @keyframes wordmark-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
