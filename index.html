@@ -688,12 +688,14 @@
     const rows = parseCSV(text).filter((r) => r.some((c) => c.trim() !== ''));
     // rows[0] = título, rows[1] = encabezado (Temporada, N Fecha, Rival, <jugadores...>, Otros/EXTRA)
     const header = rows[1];
-    const playerCols = header.slice(3, header.length - 1); // sin Otros/EXTRA: no es un jugador identificable
+    const playerCols = header.slice(3); // incluye Otros/EXTRA, se muestra como "Bastard"
     return rows.slice(2).map((r) => {
       const scorers = [];
       playerCols.forEach((name, idx) => {
         const goles = parseInt(r[3 + idx], 10);
-        if (goles > 0) scorers.push({ jugador: name.trim(), goles });
+        const trimmedName = name.trim();
+        const jugador = trimmedName.toLowerCase() === 'otros/extra' ? 'Bastard' : trimmedName;
+        if (goles > 0) scorers.push({ jugador, goles });
       });
       return { temporada: parseInt(r[0], 10), nFecha: parseInt(r[1], 10), scorers };
     });
